@@ -26,10 +26,8 @@ class Market:
         :param title:
         :return: True|False
         """
-        if title in self.wines or title in self.beers:
-            return True
-        else:
-            return False
+        return title in self.wines or title in self.beers
+
 
     @log_time
     def get_drinks_sorted_by_title(self) -> list:
@@ -39,7 +37,7 @@ class Market:
         :return: list
         """
         drinks = list(self.wines.values()) + list(self.beers.values())
-        sorted_drinks = sorted(drinks, key=lambda drink: drink.title)
+        sorted_drinks = sorted(drinks, key=lambda drink: drink.title if drink.title is not None else '')
         return sorted_drinks
 
     @log_time
@@ -52,11 +50,11 @@ class Market:
         drinks = list(self.wines.values()) + list(self.beers.values())
 
         filtered_drinks = list(filter(
-            lambda drink: (from_date is None or drink.production_date >= from_date) and
-                          (to_date is None or drink.production_date <= to_date),
+            lambda drink: (from_date is None or (drink.production_date is not None and drink.production_date >= from_date)) and
+                          (to_date is None or (drink.production_date is not None and drink.production_date <= to_date)),
             drinks
         ))
-        sorted_filtered_drinks = sorted(filtered_drinks, key=lambda drink: drink.production_date)
+        sorted_filtered_drinks = sorted(filtered_drinks, key=lambda drink: drink.production_date if drink.production_date is not None else '')
 
         return sorted_filtered_drinks
 
